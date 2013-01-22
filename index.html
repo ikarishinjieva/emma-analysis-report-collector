@@ -1,0 +1,53 @@
+<html ng-app>
+<head>
+	<style type="text/css">
+		.even-tr {background-color: #F0F0F0}
+		.odd-tr {background-color: #FFFFFF}
+		TD,TH,BODY{
+			font-family: courier,monospace;
+			font-size: 10pt;
+		}
+		TD{
+			border-left:1px solid;
+		}
+		TH{
+			border-left:1px solid;
+			border-top:1px solid;
+			border-bottom:1px solid;
+		}
+	</style>
+	<script type='text/javascript' src='angular.min.js'></script>
+	<script type='text/javascript'>
+	function ReportCtrl($scope, $http) {
+		$http.get('report.json').success(function(data) {
+			$scope.items = data;
+		});
+	}
+	</script>
+</head>
+<body ng-controller="ReportCtrl">
+	<div style='align:right;width:100%;border:1px solid'>
+	<form enctype="multipart/form-data" action='/upload' method='post'>
+	Domain ID : <input type="text" name="domain_id" required><br/>
+	<input type="file" name="upload" multiple="multiple"  accept="text/html" required><br/>
+	<input type="submit" value="Upload" style="align:right">
+	</form>
+	</div>
+	<br/>
+	
+	<table style='border-spacing:0; border-bottom: 1px solid; border-right: 1px solid;width:100%'>
+		<tr>
+			<th><a href="" ng-click="predicate = 'domain_id'; reverse=!reverse">By</a></th>
+			<th><a href="" ng-click="predicate = 'module'; reverse=!reverse">Module</a></th>
+			<th><a href="" ng-click="predicate = 'to_qa'; reverse=!reverse">Comment</a></th>
+			<th><a href="" ng-click="predicate = 'filename'; reverse=!reverse">Filename</a></th>
+		</tr>
+		<tr ng-repeat="item in items | orderBy:predicate:reverse" ng-class-even="'even-tr'" ng-class-odd="'odd-tr'">
+			<td>{{item.domain_id}}</td>
+			<td>{{item.module}}</td>
+			<td ng-bind-html-unsafe="item.to_qa"></td>
+			<td>{{item.filename}}</td>
+		</tr>
+	</table>
+</body>
+</html>
